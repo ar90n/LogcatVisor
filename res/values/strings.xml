@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LogcatVisor</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="pref_title">LogcatVisor Settings</string>
+    <string name="enable_title">Enable LogcatVisor</string>
+    <string name="opacity_title">Oppacity</string>
+    <string name="vertical_size_title">Vertical Size</string>
+    <string name="horizontal_size_title">Horizontal Size</string>
+    <string name="horizontal_offset_title">Horizontal Offset</string>
+    <string name="vertical_offset_title">Vertical Offset</string>
+    <string name="fontsize_title">Font Size</string>
+    <string name="fontsize_prompt">Font Size</string>
+    <string name="fontcolor_title">Font Color</string>
+    <string name="fontcolor_prompt">Font Color</string>
+    <string name="logcontent_title">Log Contents</string>  
+    <string name="dateCheckbox_Label">Date</string>
+    <string name="timeCheckbox_Label">Time</string>   
+    <string name="pidCheckbox_Label">PID</string>  
+    <string name="priorityCheckbox_Label">Priority</string>  
+    <string name="tagCheckbox_Label">Tag</string>  
+    <string name="logCheckbox_Label">Log</string>     
+    <string name="grep_title">Grep</string>  
+</resources>

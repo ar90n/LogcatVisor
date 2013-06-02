@@ -1,8 +1,12 @@
 package net.ar90n.logcatvisor;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -66,17 +70,22 @@ public class LoggerService extends Service {
         boolean mLoggerThreadShouldRun = true;
 
         private Runnable logcatRunnable = new Runnable() {
-			String[] logcatCommand = new String[]{ "logcat", "-v", "threadtime", "*:V" };
+			String logcatCommand = "logcat -v threadtime *:V\n";
         	
 			@Override
-			public void run() {
-				Process proc = null;
+			public void run() {				
+			    Process proc = null;
 				BufferedReader bf = null;
+				BufferedWriter bw = null;
 				
 				try {
-					proc = Runtime.getRuntime().exec( logcatCommand );
-					bf = new BufferedReader(new InputStreamReader(proc.getInputStream()), 1024);
-				
+					proc = Runtime.getRuntime().exec("su"); 
+					bw = new BufferedWriter( new OutputStreamWriter( proc.getOutputStream()), 4096);
+					bf = new BufferedReader(new InputStreamReader(proc.getInputStream()), 4096);
+
+					bw.write( logcatCommand );
+					bw.flush();
+					
 					while ( true ) {
 						synchronized ( mLoggerThreadLock ) {
 							if( mLoggerThreadShouldRun == false ) {
@@ -103,6 +112,18 @@ public class LoggerService extends Service {
 						} catch ( IOException e) {
 							e.printStackTrace();
 						}
+					}
+					
+					if( bw != null ) {
+						try {
+							bw.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					if( proc != null ) {
+						proc.destroy();
 					}
 				}
 			}
@@ -168,6 +189,7 @@ public class LoggerService extends Service {
                 mListView.setAdapter( mAdapter );
                 mListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
                 mListViewLayoutParams = (android.widget.LinearLayout.LayoutParams) mListView.getLayoutParams();
+                
         }
         
         private String generateDisplayString( String[] logcatLineParts ) {
@@ -193,7 +215,7 @@ public class LoggerService extends Service {
         @Override
         public void onDestroy() {
         	stopLoggerThread();
-        	
+
         	mWindowManager.removeView(mViews);
 
         	super.onDestroy();
@@ -214,7 +236,6 @@ public class LoggerService extends Service {
 			@Override
 			public void setOppacity(int oppacity) throws RemoteException {
 				final float alpha = Math.min( MAX_OPPACITY, oppacity ) / (float)MAX_OPPACITY;
-				Log.d(TAG, String.format( "%f", alpha));
 				mListView.setAlpha( alpha );
 			}
 			
